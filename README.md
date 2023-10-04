@@ -1,6 +1,6 @@
 # TrustBallot
 
-TrustBallot is a decentralized voting application built on the NEAR Protocol. It allows users to create and participate in polls with transparent and secure voting. The application is deployed on Cloudflare, and you can access it at [trustballot.site](https://trustballot.site).
+TrustBallot is a blockchain based voting platform. It allows users to create and participate in polls with transparent and secure voting, using the NEAR Protocol. The application is deployed on Cloudflare, and the users can access it at [trustballot.site](https://trustballot.site).
 
 ## Features
 
@@ -45,6 +45,10 @@ TrustBallot is deployed on Cloudflare and can be accessed at [trustballot.site](
 - **NEAR Protocol**: Blockchain platform for secure and transparent smart contracts.
   
 - **React**: JavaScript library for building interactive user interfaces.
+
+- **Bootstrap and React-Bootstrap:** Styling and UI components are built using Bootstrap and React-Bootstrap.
+    
+- **JavaScript (Node.js):** JavaScript is used for various components, including the integration tests.
 
 - **Cloudflare**: Web infrastructure and security platform for reliable deployment.
 
