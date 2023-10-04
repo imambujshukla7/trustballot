@@ -1,0 +1,147 @@
+.nav-bar {
+  background-color: #9340ff;
+}
+body {
+  background-color: #9340ff;
+  font-family: "Open Sans", sans-serif;
+  overflow-x: hidden;
+}
+
+.container-hactiv {
+  display: grid;
+
+  place-items: center;
+
+  grid-template-columns: auto auto;
+  gap: 200px;
+  justify-content: space-between;
+
+  padding-bottom: 5%;
+  /* flex-wrap: wrap; */
+}
+
+.hactiv-poll {
+  padding-top: 5%;
+  padding-bottom: 5%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 60px;
+}
+
+.container-hactiv1 {
+  display: grid;
+
+  place-items: center;
+
+  grid-template-columns: auto auto;
+  gap: 10px;
+  justify-content: space-between;
+
+  padding-bottom: 5%;
+  /* flex-wrap: wrap; */
+}
+
+.hactiv-h1 {
+  font-size: 100px;
+  /* text-align: center; */
+  color: "white";
+}
+
+@media (max-width: 768px) {
+  .container-hactiv {
+    display: grid;
+
+    place-items: center;
+
+    grid-template-columns: auto;
+    gap: 40px;
+    justify-content: space-between;
+    padding-bottom: 80px;
+    /* flex-wrap: wrap; */
+  }
+
+  .container-hactiv1 {
+    display: grid;
+
+    place-items: center;
+
+    grid-template-columns: auto;
+    gap: 40px;
+    padding-bottom: 80px;
+    justify-content: space-between;
+    /* max-width: 80%; */
+    /* flex-wrap: wrap; */
+  }
+
+  .hactiv-poll {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hactiv-h1 {
+    font-size: 50px;
+    text-align: center;
+    color: white;
+  }
+
+  .hactiv-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .hactiv-footer {
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    background: #5e17eb;
+    flex-wrap: wrap;
+    padding-bottom: 150px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    /* padding: 200px; */
+  }
+}
+
+.container-bg {
+  background-color: #612375;
+  border: none !important;
+  color: rgb(184, 182, 182);
+}
+
+.hactiv-button {
+  align-self: center;
+}
+
+.b-img2 {
+  margin-top: 7%;
+  filter: drop-shadow(10px 20px 20px rgb(48, 48, 48));
+}
+
+.b-img1 {
+  width: 98%;
+  /* margin-top: 7%; */
+  /* height: 10%; */
+
+  /* filter: drop-shadow(10px 20px 20px rgb(48, 48, 48)); */
+}
+
+.flexcontainer {
+  max-width: 50%;
+}
+
+.hactiv-footer {
+  width: 100%;
+  text-align: center;
+  align-items: center;
+  background: #5e17eb;
+  flex-wrap: wrap;
+  padding-bottom: 150px;
+  display: flex;
+  justify-content: space-between;
+  /* padding: 20px; */
+}
