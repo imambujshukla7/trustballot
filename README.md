@@ -1,4 +1,4 @@
-# TrustBallot
+# TrustBallot  
 
 TrustBallot is a blockchain based voting platform. It allows users to create and participate in polls with transparent and secure voting, using the NEAR Protocol. The application is deployed on Cloudflare, and the users can access it at [trustballot.site](https://trustballot.site).
 
