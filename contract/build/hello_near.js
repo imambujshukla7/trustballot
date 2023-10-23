@@ -22,7 +22,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-// make PromiseIndex a nominal typing
+
 var PromiseIndexBrand;
 (function (PromiseIndexBrand) {
   PromiseIndexBrand[PromiseIndexBrand["_"] = -1] = "_";
@@ -35,12 +35,7 @@ var TypeBrand;
 })(TypeBrand || (TypeBrand = {}));
 const ERR_INCONSISTENT_STATE = "The collection is an inconsistent state. Did previous smart contract execution terminate unexpectedly?";
 const ERR_INDEX_OUT_OF_BOUNDS = "Index out of bounds";
-/**
- * Asserts that the expression passed to the function is truthy, otherwise throws a new Error with the provided message.
- *
- * @param expression - The expression to be asserted.
- * @param message - The error message to be printed.
- */
+
 function assert(expression, message) {
   if (!expression) {
     throw new Error("assertion failed: " + message);
@@ -98,40 +93,24 @@ function deserialize(valueToDeserialize) {
     return value;
   });
 }
-/**
- * Convert a string to Uint8Array, each character must have a char code between 0-255.
- * @param s - string that with only Latin1 character to convert
- * @returns result Uint8Array
- */
+
 function bytes(s) {
   return env.latin1_string_to_uint8array(s);
 }
-/**
- * Convert a Uint8Array to string, each uint8 to the single character of that char code
- * @param a - Uint8Array to convert
- * @returns result string
- */
+
 function str(a) {
   return env.uint8array_to_latin1_string(a);
 }
-/**
- * Encode the string to Uint8Array with UTF-8 encoding
- * @param s - String to encode
- * @returns result Uint8Array
- */
+
 function encode(s) {
   return env.utf8_string_to_uint8array(s);
 }
-/**
- * Decode the Uint8Array to string in UTF-8 encoding
- * @param a - array to decode
- * @returns result string
- */
+
 function decode(a) {
   return env.uint8array_to_utf8_string(a);
 }
 
-/*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
+
 function assertNumber(n) {
   if (!Number.isSafeInteger(n)) throw new Error(`Wrong integer: ${n}`);
 }
@@ -525,11 +504,7 @@ function storageReadRaw(key) {
   }
   return env.read_register(0);
 }
-/**
- * Reads the utf-8 string value from NEAR storage that is stored under the provided key.
- *
- * @param key - The utf-8 string key to read from storage.
- */
+
 function storageRead(key) {
   const ret = storageReadRaw(encode(key));
   if (ret !== null) {
@@ -537,103 +512,58 @@ function storageRead(key) {
   }
   return null;
 }
-/**
- * Checks for the existance of a value under the provided key in NEAR storage.
- *
- * @param key - The key to check for in storage.
- */
+
 function storageHasKeyRaw(key) {
   return env.storage_has_key(key) === 1n;
 }
-/**
- * Checks for the existance of a value under the provided utf-8 string key in NEAR storage.
- *
- * @param key - The utf-8 string key to check for in storage.
- */
+
 function storageHasKey(key) {
   return storageHasKeyRaw(encode(key));
 }
-/**
- * Get the last written or removed value from NEAR storage.
- */
+
 function storageGetEvictedRaw() {
   return env.read_register(EVICTED_REGISTER);
 }
-/**
- * Writes the provided bytes to NEAR storage under the provided key.
- *
- * @param key - The key under which to store the value.
- * @param value - The value to store.
- */
+
 function storageWriteRaw(key, value) {
   return env.storage_write(key, value, EVICTED_REGISTER) === 1n;
 }
-/**
- * Removes the value of the provided key from NEAR storage.
- *
- * @param key - The key to be removed.
- */
+
 function storageRemoveRaw(key) {
   return env.storage_remove(key, EVICTED_REGISTER) === 1n;
 }
-/**
- * Removes the value of the provided utf-8 string key from NEAR storage.
- *
- * @param key - The utf-8 string key to be removed.
- */
+
 function storageRemove(key) {
   return storageRemoveRaw(encode(key));
 }
-/**
- * Returns the arguments passed to the current smart contract call.
- */
+
 function inputRaw() {
   env.input(0);
   return env.read_register(0);
 }
-/**
- * Returns the arguments passed to the current smart contract call as utf-8 string.
- */
+
 function input() {
   return decode(inputRaw());
 }
 
-/**
- * A lookup map that stores data in NEAR storage.
- */
+
 class LookupMap {
-  /**
-   * @param keyPrefix - The byte prefix to use when storing elements inside this collection.
-   */
+  
   constructor(keyPrefix) {
     this.keyPrefix = keyPrefix;
   }
-  /**
-   * Checks whether the collection contains the value.
-   *
-   * @param key - The value for which to check the presence.
-   */
+  
   containsKey(key) {
     const storageKey = this.keyPrefix + key;
     return storageHasKey(storageKey);
   }
-  /**
-   * Get the data stored at the provided key.
-   *
-   * @param key - The key at which to look for the data.
-   * @param options - Options for retrieving the data.
-   */
+  
   get(key, options) {
     const storageKey = this.keyPrefix + key;
     const value = storageReadRaw(encode(storageKey));
     return getValueWithOptions(value, options);
   }
-  /**
-   * Removes and retrieves the element with the provided key.
-   *
-   * @param key - The key at which to remove data.
-   * @param options - Options for retrieving the data.
-   */
+  
   remove(key, options) {
     const storageKey = this.keyPrefix + key;
     if (!storageRemove(storageKey)) {
@@ -642,13 +572,7 @@ class LookupMap {
     const value = storageGetEvictedRaw();
     return getValueWithOptions(value, options);
   }
-  /**
-   * Store a new value at the provided key.
-   *
-   * @param key - The key at which to store in the collection.
-   * @param newValue - The value to store in the collection.
-   * @param options - Options for retrieving and storing the data.
-   */
+ 
   set(key, newValue, options) {
     const storageKey = this.keyPrefix + key;
     const storageValue = serializeValueWithOptions(newValue, options);
@@ -658,30 +582,17 @@ class LookupMap {
     const value = storageGetEvictedRaw();
     return getValueWithOptions(value, options);
   }
-  /**
-   * Extends the current collection with the passed in array of key-value pairs.
-   *
-   * @param keyValuePairs - The key-value pairs to extend the collection with.
-   * @param options - Options for storing the data.
-   */
+ 
   extend(keyValuePairs, options) {
     for (const [key, value] of keyValuePairs) {
       this.set(key, value, options);
     }
   }
-  /**
-   * Serialize the collection.
-   *
-   * @param options - Options for storing the data.
-   */
+ 
   serialize(options) {
     return serializeValueWithOptions(this, options);
   }
-  /**
-   * Converts the deserialized data from storage to a JavaScript instance of the collection.
-   *
-   * @param data - The deserialized data to create an instance from.
-   */
+ 
   static reconstruct(data) {
     return new LookupMap(data.keyPrefix);
   }
@@ -693,31 +604,18 @@ function indexToKey(prefix, index) {
   const key = str(array);
   return prefix + key;
 }
-/**
- * An iterable implementation of vector that stores its content on the trie.
- * Uses the following map: index -> element
- */
+
 class Vector {
-  /**
-   * @param prefix - The byte prefix to use when storing elements inside this collection.
-   * @param length - The initial length of the collection. By default 0.
-   */
+
   constructor(prefix, length = 0) {
     this.prefix = prefix;
     this.length = length;
   }
-  /**
-   * Checks whether the collection is empty.
-   */
+  
   isEmpty() {
     return this.length === 0;
   }
-  /**
-   * Get the data stored at the provided index.
-   *
-   * @param index - The index at which to look for the data.
-   * @param options - Options for retrieving the data.
-   */
+  
   get(index, options) {
     if (index >= this.length) {
       return options?.defaultValue ?? null;
@@ -726,14 +624,7 @@ class Vector {
     const value = storageReadRaw(bytes(storageKey));
     return getValueWithOptions(value, options);
   }
-  /**
-   * Removes an element from the vector and returns it in serialized form.
-   * The removed element is replaced by the last element of the vector.
-   * Does not preserve ordering, but is `O(1)`.
-   *
-   * @param index - The index at which to remove the element.
-   * @param options - Options for retrieving and storing the data.
-   */
+
   swapRemove(index, options) {
     assert(index < this.length, ERR_INDEX_OUT_OF_BOUNDS);
     if (index + 1 === this.length) {
@@ -745,22 +636,13 @@ class Vector {
     const value = storageGetEvictedRaw();
     return getValueWithOptions(value, options);
   }
-  /**
-   * Adds data to the collection.
-   *
-   * @param element - The data to store.
-   * @param options - Options for storing the data.
-   */
+ 
   push(element, options) {
     const key = indexToKey(this.prefix, this.length);
     this.length += 1;
     storageWriteRaw(bytes(key), serializeValueWithOptions(element, options));
   }
-  /**
-   * Removes and retrieves the element with the highest index.
-   *
-   * @param options - Options for retrieving the data.
-   */
+ 
   pop(options) {
     if (this.isEmpty()) {
       return options?.defaultValue ?? null;
@@ -772,13 +654,7 @@ class Vector {
     const value = storageGetEvictedRaw();
     return getValueWithOptions(value, options);
   }
-  /**
-   * Replaces the data stored at the provided index with the provided data and returns the previously stored data.
-   *
-   * @param index - The index at which to replace the data.
-   * @param element - The data to replace with.
-   * @param options - Options for retrieving and storing the data.
-   */
+  
   replace(index, element, options) {
     assert(index < this.length, ERR_INDEX_OUT_OF_BOUNDS);
     const key = indexToKey(this.prefix, index);
@@ -786,11 +662,7 @@ class Vector {
     const value = storageGetEvictedRaw();
     return getValueWithOptions(value, options);
   }
-  /**
-   * Extends the current collection with the passed in array of elements.
-   *
-   * @param elements - The elements to extend the collection with.
-   */
+ 
   extend(elements) {
     for (const element of elements) {
       this.push(element);
@@ -799,21 +671,13 @@ class Vector {
   [Symbol.iterator]() {
     return new VectorIterator(this);
   }
-  /**
-   * Create a iterator on top of the default collection iterator using custom options.
-   *
-   * @param options - Options for retrieving and storing the data.
-   */
+  
   createIteratorWithOptions(options) {
     return {
       [Symbol.iterator]: () => new VectorIterator(this, options)
     };
   }
-  /**
-   * Return a JavaScript array of the data stored within the collection.
-   *
-   * @param options - Options for retrieving and storing the data.
-   */
+  
   toArray(options) {
     const array = [];
     const iterator = options ? this.createIteratorWithOptions(options) : this;
@@ -822,9 +686,7 @@ class Vector {
     }
     return array;
   }
-  /**
-   * Remove all of the elements stored within the collection.
-   */
+ 
   clear() {
     for (let index = 0; index < this.length; index++) {
       const key = indexToKey(this.prefix, index);
@@ -832,32 +694,19 @@ class Vector {
     }
     this.length = 0;
   }
-  /**
-   * Serialize the collection.
-   *
-   * @param options - Options for storing the data.
-   */
+ 
   serialize(options) {
     return serializeValueWithOptions(this, options);
   }
-  /**
-   * Converts the deserialized data from storage to a JavaScript instance of the collection.
-   *
-   * @param data - The deserialized data to create an instance from.
-   */
+ 
   static reconstruct(data) {
     const vector = new Vector(data.prefix, data.length);
     return vector;
   }
 }
-/**
- * An iterator for the Vector collection.
- */
+
 class VectorIterator {
-  /**
-   * @param vector - The vector collection to create an iterator for.
-   * @param options - Options for retrieving and storing data.
-   */
+ 
   constructor(vector, options) {
     this.vector = vector;
     this.options = options;
@@ -879,36 +728,23 @@ class VectorIterator {
   }
 }
 
-/**
- * An unordered map that stores data in NEAR storage.
- */
+
 class UnorderedMap {
-  /**
-   * @param prefix - The byte prefix to use when storing elements inside this collection.
-   */
+ 
   constructor(prefix) {
     this.prefix = prefix;
-    this._keys = new Vector(`${prefix}u`); // intentional different prefix with old UnorderedMap
+    this._keys = new Vector(`${prefix}u`); 
     this.values = new LookupMap(`${prefix}m`);
   }
-  /**
-   * The number of elements stored in the collection.
-   */
+ 
   get length() {
     return this._keys.length;
   }
-  /**
-   * Checks whether the collection is empty.
-   */
+  
   isEmpty() {
     return this._keys.isEmpty();
   }
-  /**
-   * Get the data stored at the provided key.
-   *
-   * @param key - The key at which to look for the data.
-   * @param options - Options for retrieving the data.
-   */
+ 
   get(key, options) {
     const valueAndIndex = this.values.get(key);
     if (valueAndIndex === null) {
@@ -917,13 +753,7 @@ class UnorderedMap {
     const [value] = valueAndIndex;
     return getValueWithOptions(encode(value), options);
   }
-  /**
-   * Store a new value at the provided key.
-   *
-   * @param key - The key at which to store in the collection.
-   * @param value - The value to store in the collection.
-   * @param options - Options for retrieving and storing the data.
-   */
+
   set(key, value, options) {
     const valueAndIndex = this.values.get(key);
     const serialized = serializeValueWithOptions(value, options);
@@ -937,12 +767,7 @@ class UnorderedMap {
     this.values.set(key, [decode(serialized), oldIndex]);
     return getValueWithOptions(encode(oldValue), options);
   }
-  /**
-   * Removes and retrieves the element with the provided key.
-   *
-   * @param key - The key at which to remove data.
-   * @param options - Options for retrieving the data.
-   */
+  
   remove(key, options) {
     const oldValueAndIndex = this.values.remove(key);
     if (oldValueAndIndex === null) {
@@ -950,9 +775,9 @@ class UnorderedMap {
     }
     const [value, index] = oldValueAndIndex;
     assert(this._keys.swapRemove(index) !== null, ERR_INCONSISTENT_STATE);
-    // the last key is swapped to key[index], the corresponding [value, index] need update
+   
     if (!this._keys.isEmpty() && index !== this._keys.length) {
-      // if there is still elements and it was not the last element
+      
       const swappedKey = this._keys.get(index);
       const swappedValueAndIndex = this.values.get(swappedKey);
       assert(swappedValueAndIndex !== null, ERR_INCONSISTENT_STATE);
@@ -960,34 +785,23 @@ class UnorderedMap {
     }
     return getValueWithOptions(encode(value), options);
   }
-  /**
-   * Remove all of the elements stored within the collection.
-   */
+  
   clear() {
     for (const key of this._keys) {
-      // Set instead of remove to avoid loading the value from storage.
-      this.values.set(key, null);
+     
     }
     this._keys.clear();
   }
   [Symbol.iterator]() {
     return new UnorderedMapIterator(this);
   }
-  /**
-   * Create a iterator on top of the default collection iterator using custom options.
-   *
-   * @param options - Options for retrieving and storing the data.
-   */
+  
   createIteratorWithOptions(options) {
     return {
       [Symbol.iterator]: () => new UnorderedMapIterator(this, options)
     };
   }
-  /**
-   * Return a JavaScript array of the data stored within the collection.
-   *
-   * @param options - Options for retrieving and storing the data.
-   */
+ 
   toArray(options) {
     const array = [];
     const iterator = options ? this.createIteratorWithOptions(options) : this;
@@ -996,35 +810,23 @@ class UnorderedMap {
     }
     return array;
   }
-  /**
-   * Extends the current collection with the passed in array of key-value pairs.
-   *
-   * @param keyValuePairs - The key-value pairs to extend the collection with.
-   */
+ 
   extend(keyValuePairs) {
     for (const [key, value] of keyValuePairs) {
       this.set(key, value);
     }
   }
-  /**
-   * Serialize the collection.
-   *
-   * @param options - Options for storing the data.
-   */
+ 
   serialize(options) {
     return serializeValueWithOptions(this, options);
   }
-  /**
-   * Converts the deserialized data from storage to a JavaScript instance of the collection.
-   *
-   * @param data - The deserialized data to create an instance from.
-   */
+ 
   static reconstruct(data) {
     const map = new UnorderedMap(data.prefix);
-    // reconstruct keys Vector
+   
     map._keys = new Vector(`${data.prefix}u`);
     map._keys.length = data._keys.length;
-    // reconstruct values LookupMap
+   
     map.values = new LookupMap(`${data.prefix}m`);
     return map;
   }
@@ -1045,14 +847,9 @@ class UnorderedMap {
     return ret;
   }
 }
-/**
- * An iterator for the UnorderedMap collection.
- */
+
 class UnorderedMapIterator {
-  /**
-   * @param unorderedMap - The unordered map collection to create an iterator for.
-   * @param options - Options for retrieving and storing data.
-   */
+ 
   constructor(unorderedMap, options) {
     this.options = options;
     this.keys = new VectorIterator(unorderedMap._keys);
@@ -1084,47 +881,28 @@ function deserializeIndex(rawIndex) {
   const [data] = new Uint32Array(rawIndex.buffer);
   return data;
 }
-/**
- * An unordered set that stores data in NEAR storage.
- */
+
 class UnorderedSet {
-  /**
-   * @param prefix - The byte prefix to use when storing elements inside this collection.
-   */
+  
   constructor(prefix) {
     this.prefix = prefix;
     this.elementIndexPrefix = `${prefix}i`;
     this._elements = new Vector(`${prefix}e`);
   }
-  /**
-   * The number of elements stored in the collection.
-   */
+ 
   get length() {
     return this._elements.length;
   }
-  /**
-   * Checks whether the collection is empty.
-   */
+  
   isEmpty() {
     return this._elements.isEmpty();
   }
-  /**
-   * Checks whether the collection contains the value.
-   *
-   * @param element - The value for which to check the presence.
-   * @param options - Options for storing data.
-   */
+  
   contains(element, options) {
     const indexLookup = this.elementIndexPrefix + serializeValueWithOptions(element, options);
     return storageHasKey(indexLookup);
   }
-  /**
-   * If the set did not have this value present, `true` is returned.
-   * If the set did have this value present, `false` is returned.
-   *
-   * @param element - The value to store in the collection.
-   * @param options - Options for storing the data.
-   */
+
   set(element, options) {
     const indexLookup = this.elementIndexPrefix + serializeValueWithOptions(element, options);
     if (storageRead(indexLookup)) {
@@ -1136,33 +914,25 @@ class UnorderedSet {
     this._elements.push(element, options);
     return true;
   }
-  /**
-   * Returns true if the element was present in the set.
-   *
-   * @param element - The entry to remove.
-   * @param options - Options for retrieving and storing data.
-   */
+  
   remove(element, options) {
     const indexLookup = this.elementIndexPrefix + serializeValueWithOptions(element, options);
     const indexRaw = storageReadRaw(encode(indexLookup));
     if (!indexRaw) {
       return false;
     }
-    // If there is only one element then swap remove simply removes it without
-    // swapping with the last element.
+    
     if (this.length === 1) {
       storageRemove(indexLookup);
       const index = deserializeIndex(indexRaw);
       this._elements.swapRemove(index);
       return true;
     }
-    // If there is more than one element then swap remove swaps it with the last
-    // element.
+   
     const lastElement = this._elements.get(this.length - 1, options);
     assert(!!lastElement, ERR_INCONSISTENT_STATE);
     storageRemove(indexLookup);
-    // If the removed element was the last element from keys, then we don't need to
-    // reinsert the lookup back.
+    
     if (lastElement !== element) {
       const lastLookupElement = this.elementIndexPrefix + serializeValueWithOptions(lastElement, options);
       storageWriteRaw(encode(lastLookupElement), indexRaw);
@@ -1171,9 +941,7 @@ class UnorderedSet {
     this._elements.swapRemove(index);
     return true;
   }
-  /**
-   * Remove all of the elements stored within the collection.
-   */
+  
   clear(options) {
     for (const element of this._elements) {
       const indexLookup = this.elementIndexPrefix + serializeValueWithOptions(element, options);
@@ -1184,21 +952,13 @@ class UnorderedSet {
   [Symbol.iterator]() {
     return this._elements[Symbol.iterator]();
   }
-  /**
-   * Create a iterator on top of the default collection iterator using custom options.
-   *
-   * @param options - Options for retrieving and storing the data.
-   */
+  
   createIteratorWithOptions(options) {
     return {
       [Symbol.iterator]: () => new VectorIterator(this._elements, options)
     };
   }
-  /**
-   * Return a JavaScript array of the data stored within the collection.
-   *
-   * @param options - Options for retrieving and storing the data.
-   */
+ 
   toArray(options) {
     const array = [];
     const iterator = options ? this.createIteratorWithOptions(options) : this;
@@ -1207,32 +967,20 @@ class UnorderedSet {
     }
     return array;
   }
-  /**
-   * Extends the current collection with the passed in array of elements.
-   *
-   * @param elements - The elements to extend the collection with.
-   */
+  
   extend(elements) {
     for (const element of elements) {
       this.set(element);
     }
   }
-  /**
-   * Serialize the collection.
-   *
-   * @param options - Options for storing the data.
-   */
+  
   serialize(options) {
     return serializeValueWithOptions(this, options);
   }
-  /**
-   * Converts the deserialized data from storage to a JavaScript instance of the collection.
-   *
-   * @param data - The deserialized data to create an instance from.
-   */
+  
   static reconstruct(data) {
     const set = new UnorderedSet(data.prefix);
-    // reconstruct Vector
+   
     const elementsPrefix = data.prefix + "e";
     set._elements = new Vector(elementsPrefix);
     set._elements.length = data._elements.length;
@@ -1257,26 +1005,21 @@ class UnorderedSet {
   }
 }
 
-/**
- * Tells the SDK to expose this function as a view function.
- *
- * @param _empty - An empty object.
- */
+
 function view(_empty) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  
   return function (_target, _key, _descriptor
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  
   ) {};
 }
 function call({
   privateFunction = false,
   payableFunction = false
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
   return function (_target, _key, descriptor) {
     const originalMethod = descriptor.value;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+   
     descriptor.value = function (...args) {
       if (privateFunction && predecessorAccountId() !== currentAccountId()) {
         throw new Error("Function is private");
@@ -1293,7 +1036,7 @@ function NearBindgen({
   serializer = serialize,
   deserializer = deserialize
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
   return target => {
     return class extends target {
       static _create() {
@@ -1334,14 +1077,14 @@ function NearBindgen({
 
 var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _class, _class2;
 let VotingContract = (_dec = NearBindgen({}), _dec2 = view(), _dec3 = view(), _dec4 = view(), _dec5 = view(), _dec6 = view(), _dec7 = view(), _dec8 = call({}), _dec9 = call({}), _dec10 = call({}), _dec11 = call({}), _dec12 = call({}), _dec13 = call({}), _dec(_class = (_class2 = class VotingContract {
-  // Candidate Pair Used to store Candidate Names and URL links
+
   candidatePair = new UnorderedMap("candidate_pair");
-  // Prompt Set Was used to in an effort to keep track of keys for the candidatePair Unordered Map
+  
   promptSet = new UnorderedSet("promptArray");
   voteArray = new UnorderedMap("voteArray");
   userParticipation = new UnorderedMap("user Participation ");
 
-  // Writing View Methods
+ 
 
   getUrl({
     prompt,
@@ -1595,4 +1338,3 @@ function getUrl() {
 }
 
 export { addCandidatePair, addToPromptArray, addVote, clearPromptArray, didParticipate, getAllPrompts, getCandidatePair, getUrl, getVotes, initializeVotes, participateArray, recordUser };
-//# sourceMappingURL=hello_near.js.map
