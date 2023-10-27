@@ -1,5 +1,3 @@
-/* A helper file that simplifies using the wallet selector */
-
 // near api js
 import { providers } from 'near-api-js';
 
@@ -25,10 +23,7 @@ export class Wallet {
   createAccessKeyFor;
 
   constructor({ createAccessKeyFor = undefined, network = 'testnet' }) {
-    // Login to a wallet passing a contractId will create a local
-    // key, so the user skips signing non-payable transactions.
-    // Omitting the accountId will result in the user being
-    // asked to sign all transactions.
+    
     this.createAccessKeyFor = createAccessKeyFor
     this.network = 'testnet'
   }
