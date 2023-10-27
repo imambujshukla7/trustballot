@@ -12,7 +12,7 @@ import {
 class VotingContract {
   // Candidate Pair Used to store Candidate Names and URL links
   candidatePair = new UnorderedMap<string[]>("candidate_pair");
-  // Prompt Set Was used to in an effort to keep track of keys for the candidatePair Unordered Map
+ 
   promptSet = new UnorderedSet<string>("promptArray");
   voteArray = new UnorderedMap<number[]>("voteArray");
   userParticipation = new UnorderedMap<string[]>("user Participation ");
